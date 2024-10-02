@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+  <title>Visor Geoforestal</title>
+
+  <!--Fuentes iconos de Google-->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <!--link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+
+  
+  <!--Chroma js-->
+  <script src="https://unpkg.com/chroma-js"></script>
+
+  <!--Jquery-->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+
+  
+  <!--Plantilla de estilos y paquete de Leaflet-->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/> 
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin="">
+  </script>
+  <script src="./js/leaflet-sidebar.js"></script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P93LPRLBPR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-P93LPRLBPR');
+  </script>
+
+  <!--Plantilla para el sidebar-->
+  <link rel="stylesheet" href="../visor/css/leaflet-sidebar.css" />
+
+  <!--Paquete de Leaflet para los WMS-->
+  <script src="https://unpkg.com/leaflet.wms@0.2.0/dist/leaflet.wms.js"></script>
+  
+  <!--Paquete de Leaflet para coordenadas-->
+  <script src="https://unpkg.com/leaflet.coordinates@0.1.5/dist/Leaflet.Coordinates-0.1.5.src.js"></script>
+
+  <!--Paquete de Leaflet para el menu de control-->
+  <script src = "https://unpkg.com/leaflet.control.layers.tree@1.1.0/L.Control.Layers.Tree.js"></script>
+  <link rel = "stylesheet" href = "https://unpkg.com/leaflet.control.layers.tree@1.1.0/L.Control.Layers.Tree.css"/>
+  
+  <!--Paquete Georaster.js-->
+  <script src="https://unpkg.com/georaster"></script>
+  <!--Paquetes de Leaflet para soportar geotiff-->
+  <script src="https://unpkg.com/proj4"></script>
+  <script src="https://unpkg.com/georaster-layer-for-leaflet@latest"></script>
+
+  <!--Control de ventana p/ Leaflet-->
+  <script src = "./js/L.Control.Window.js"></script>
+
+  <!--Plantilla de estilos-->
+  <link rel = "stylesheet" href = "./css/L.Control.Window.css" />
+  <link rel = "stylesheet" href = "./css/style.css" />
+
+</head>
+
+<body>
+  
+  <script src = "./js/events.js" type = "module"></script>
+
+  <div id="sidebar" class="sidebar collapsed">
+    <div class="sidebar-tabs">
+      <ul role="tablist">
+        <li><a href="#home" role="tab"><i class="fa fa-home"></i></a></li>
+        <li><a href="#base-layer-info" role="tab"><i class="fas fa-map"></i></a></li>
+        <li><a href="#information" role="tab"><i class="fas fa-layer-group"></i></a></li>        
+      </ul>          
+    </div>
+
+    <div class="sidebar-content">
+      <div class="sidebar-pane" id="home">
+        <h1 class="sidebar-header">
+          Home
+          <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+        <p></p>
+      </div>
+
+      <div class="sidebar-pane" id="base-layer-info">
+        <h1 class="sidebar-header">
+          Información sobre capa base
+          <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+        <div id="base-layer-info-content">
+          <!--Al inicio de la carga de la pagina, se muestra este texto-->
+          <!--sobre la capa base que se ve primero-->
+          <p>
+            <i>
+            Las capas base pueden ser utilizadas para contextualizar el resto de la información seleccionada. 
+            </i>
+          </p>
+          <tr>
+          <p>
+            Argenmap mapa base es un servicio libre y gratuito de mapas base desarrollado por el Instituto Geográfico Nacional para que los diferentes usuarios puedan embeber el mapa digital oficial de la República Argentina en sitios web o consumirlo desde una aplicación SIG. Este servicio se enmarca en el mandato de la Ley Nº 22.963 (Ley de la Carta)
+          </p>
+        </div>
+      </div>
+
+      <div class="sidebar-pane" id="information">
+        <h1 class="sidebar-header">
+          Información sobre capas
+          <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+      </div>    
+
+    </div>
+    
+  </div>
+  
+
+  <div id = "map-wrapper">
+    <div id = "mapid">
+      <div class = "legend" id = "legend-1"></div>
+    </div>
+  </div>
+
+  <script src = "./js/main.js" type = "module"></script> 
+
+  <script type = "module">
+    import {map} from './js/main.js';
+
+    let title = `
+    <div style="margin:0;">
+    <img src="./images/logo.png" style="position:relative; width:65%; height:33.5%; left:20%;">
+    </div>
+    `;
+
+
+    /* <p style="margin-bottom:0;font-awesome; text-align:center;">  Para visualizar la información seleccione las capas dentro de los grupos temáticos y aguarde su carga.Este proceso puede demorar unos minutos.</p>*/
+    
+    let content = `
+    
+    <div>
+      <p style="font-weight:bold; text-align:center; font-size:18px; margin-top:0;margin-bottom:0;">Bienvenidos al Visor Cartográfico de la Dirección Nacional de Desarrollo Foresto Industrial</p>
+
+<p style="margin-bottom:0;font-awesome; text-align:center;">  Para visualizar las capas de  información seleccione  dentro de los grupos temáticos y aguarde su carga.Este proceso puede demorar unos minutos.</p>
+<div> <br> 
+</div>
+<p style="font-weight:bold;margin-bottom:0;margin-top:0;font-size:14px; font-style:italic;text-align:center ;padding-bottom:0;">   <a href="https://youtu.be/ZtaTWRea2cg"target="_blank" rel="noopener noreferrer""> Video de Bienvenida.</a></p>
+
+    </div>
+<div>
+<br> 
+</br>
+
+</div>
+
+<div> 
+<br> <br>
+</div>
+
+
+
+    
+    `;
+
+    
+
+    map.whenReady(() => {
+      var win =  L.control.window(map,{title:title, content:content}).show();
+    });
+  </script>
+  
+</body>
+
+</html>
